@@ -94,6 +94,10 @@ public class ExcelBook {
 	public String getCellType(int key, int col) {
 		return this.actualSheet.getCellValue(key, col);
 	}
+	
+	public Double getCellnumeric(int key, int col) {
+		return this.actualSheet.getCellNumericValue(key, col);
+	}
 	//-----------------------------
 	
 	//*********************************************************************************
