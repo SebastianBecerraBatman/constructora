@@ -16,6 +16,7 @@ public class LeerExcel {
     	libro.readSheet("APU");
     	int colum = -1;
     	double acum = 0;
+    	double acumTotal = 0;
     	boolean isSubtotal = false;
     	ArrayList<Double> subTotals = new ArrayList<Double>();
     	for (int i = 0; i < libro.getDataMap().size(); i++) {
