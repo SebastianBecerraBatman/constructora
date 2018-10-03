@@ -14,36 +14,33 @@ public class LeerExcel {
     	
     	libro.readExcelFile("E:\\seta_projects\\testExcel\\", "PRESUPUESTO Y APU-ELECTRICOS-VR2.xlsx");
     	libro.readSheet("APU");
-    	int colum = -1;
-    	double acum = 0;
-    	double acumTotal = 0;
-    	boolean isSubtotal = false;
-    	ArrayList<Double> subTotals = new ArrayList<Double>();
-    	for (int i = 0; i < libro.getDataMap().size(); i++) {
-    		for (int j = 0; j < libro.getDataMap().get(i).length; j++) {
-    			if(libro.getCellType(i, j).equals("Vr Unitario")||libro.getCellType(i, j).equals("Vr. Unitario")) {
-    				colum = j;
-    			}
-    			if(libro.getCellType(i, j).equals("SUBTOTAL")||libro.getCellType(i, j).equals("TOTAL COSTO DIRECTO")) {
-    				isSubtotal = true;
-    				if(acum!=0) {
-    					subTotals.add(acum);
-    				}
-    				acum = 0;
-    			}
-			}
-    		try {
-    			if (!isSubtotal && libro.getCellnumeric(i, colum)!=0) {
-    				acum += libro.getCellnumeric(i, colum);
-				}
-    			isSubtotal = false;
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-//    		System.out.println();
+//    	int colum = -1;
+//    	double acum = 0;
+//    	double acumTotal = 0;
+//    	boolean isSubtotal = false;
+    	for (int i = 0; i < libro.extractItems().size(); i++) {
+			System.out.println(libro.extractItems().get(i));
 		}
-    	for (int i = 0; i < subTotals.size(); i++) {
-			System.out.println(subTotals.get(i));
-		}
+//    	ArrayList<Double> subTotals = new ArrayList<Double>();
+    	
+//    			if(libro.getCellType(i, j).equals("Vr Unitario")||libro.getCellType(i, j).equals("Vr. Unitario")) {
+//    				colum = j;
+//    			}
+//    			if(libro.getCellType(i, j).equals("SUBTOTAL")||libro.getCellType(i, j).equals("TOTAL COSTO DIRECTO")) {
+//    				isSubtotal = true;
+//    				if(acum!=0) {
+//    					subTotals.add(acum);
+//    				}
+//    				acum = 0;
+//    			}
+			
+//    		try {
+//    			if (!isSubtotal && libro.getCellnumeric(i, colum)!=0) {
+//    				acum += libro.getCellnumeric(i, colum);
+//				}
+//    			isSubtotal = false;
+//			} catch (Exception e) {
+//				// TODO: handle exception
+//			}
     }
 }

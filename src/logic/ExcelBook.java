@@ -3,6 +3,7 @@ package logic;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -98,6 +99,19 @@ public class ExcelBook {
 	public Double getCellnumeric(int key, int col) {
 		return this.actualSheet.getCellNumericValue(key, col);
 	}
+	
+	public ArrayList<String> extractItems(){
+		ArrayList<String> subTotals = new ArrayList<String>();
+		for (int i = 0; i < this.actualSheet.getDataMap().size(); i++) {
+			for (int j = 0; j < this.actualSheet.getDataMap().get(i).length; j++) {
+				if(getCellType(i, j).equals("ÍTEM")) {
+					subTotals.add(getCellType(i+1, j));
+				}
+			}
+		}
+		return subTotals;
+	}
+    	
 	//-----------------------------
 	
 	//*********************************************************************************
