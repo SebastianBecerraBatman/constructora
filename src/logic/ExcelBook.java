@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Vector;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -14,6 +15,8 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import entities.TypeElement;
 
 
 public class ExcelBook {
@@ -101,15 +104,49 @@ public class ExcelBook {
 	}
 	
 	public ArrayList<String> extractItems(){
-		ArrayList<String> subTotals = new ArrayList<String>();
+		ArrayList<String> items = new ArrayList<String>();
 		for (int i = 0; i < this.actualSheet.getDataMap().size(); i++) {
 			for (int j = 0; j < this.actualSheet.getDataMap().get(i).length; j++) {
 				if(getCellType(i, j).equals("ÍTEM")) {
-					subTotals.add(getCellType(i+1, j));
+					items.add(getCellType(i+1, j));
 				}
 			}
 		}
-		return subTotals;
+		return items;
+	}
+	
+	public Vector<String> extractTypesMaterials(){
+		Vector<String> typesElements = new Vector<String>();
+		for (int i = 0; i < this.actualSheet.getDataMap().size(); i++) {
+			try {
+				if(getCellType(i, 0)!="" && ((getCellType(i, 0).charAt(0)=='I')
+								|| (getCellType(i, 0).charAt(0)=='V')
+								|| (getCellType(i, 0).charAt(0)=='X')
+								|| (getCellType(i, 0).charAt(0)=='L') ) && ((getCellType(i, 0).charAt(1)=='I')
+										|| (getCellType(i, 0).charAt(1)=='V')
+										|| (getCellType(i, 0).charAt(1)=='X')
+										|| (getCellType(i, 0).charAt(1)=='L')
+										||	(getCellType(i, 0).charAt(1)=='.')) ) {
+					if(!typesElements.contains(getCellType(i, 0))){
+						typesElements.add(getCellType(i, 0));
+					}
+				}
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+		}
+		return typesElements;
+	}
+	
+	public Vector<TypeElement> createTypesMaterials(){
+		Vector<TypeElement> typesElements = new Vector<TypeElement>();
+		Vector<String> typesElementsAux = this.extractTypesMaterials();
+		for (int i = 0; i < typesElementsAux.size(); i++) {
+			TypeElement typeElement = new TypeElement();
+			typeElement.setName(typesElementsAux.get(i));
+			typesElements.add(typeElement);
+		}
+		return typesElements;
 	}
     	
 	//-----------------------------

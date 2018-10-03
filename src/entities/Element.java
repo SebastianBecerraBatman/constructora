@@ -8,6 +8,8 @@ public class Element {
 	private String unity;
 	private int price;
 	private int quantity;
+	
+	
 	public int getIdAPU() {
 		return idAPU;
 	}

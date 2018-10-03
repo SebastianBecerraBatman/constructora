@@ -1,5 +1,9 @@
 package logic;
 
+import java.util.Vector;
+
+import entities.TypeElement;
+
 /**
  *
  * @author jeol
@@ -16,9 +20,13 @@ public class LeerExcel {
 //    	double acum = 0;
 //    	double acumTotal = 0;
 //    	boolean isSubtotal = false;
-    	for (int i = 0; i < libro.extractItems().size(); i++) {
-			System.out.println(libro.extractItems().get(i));
+    	
+    	
+    	Vector<TypeElement> typeElements = libro.createTypesMaterials();
+    	for (int i = 0; i < typeElements.size(); i++) {
+			System.out.println(typeElements.get(i).getName());
 		}
+    	
 //    	ArrayList<Double> subTotals = new ArrayList<Double>();
     	
 //    			if(libro.getCellType(i, j).equals("Vr Unitario")||libro.getCellType(i, j).equals("Vr. Unitario")) {
