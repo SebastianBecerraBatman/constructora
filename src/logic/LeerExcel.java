@@ -23,9 +23,12 @@ public class LeerExcel {
     	for (int i = 0; i < num; i++) {
     		XSSFSheet hoja = libro.getWorkbook().getSheetAt(i);
 //    		System.out.println(hoja.getSheetName());
-    		if(hoja.getSheetName().contains("APU")) {
+    		
     		leerLibro(libro, hoja.getSheetName());	
-    		}
+    		
+//    		else 
+//    			if(!hoja.getSheetName().contains("PRESUPUESTO"))
+//    			System.out.println(hoja.getSheetName());
 		}    
 	}
 	
@@ -38,11 +41,13 @@ public class LeerExcel {
 //    	boolean isSubtotal = false;
     	libro.readSheet(hoja);
     	
-    	Vector<TypeElement> typeElements = libro.createTypesMaterials();
-    	Map<String, APU> items = libro.extractItems();
-    	ArrayList<String> totalCosts = libro.extractItemsTotalCosts();
+//    	Vector<TypeElement> typeElements = libro.createTypesMaterials();
+    	
+    		Map<String, APU> items = libro.extractItems(hoja);
+//    	ArrayList<String> totalCosts = libro.extractItemsTotalCosts();
+//    	Map<String,String> cantidades;
     	for(String codigo:items.keySet()) {
-    		System.out.println(codigo+";"+items.get(codigo).getNombre()+";"+items.get(codigo).getUnidad()+";"+items.get(codigo).getValor());
+    		System.out.println(codigo+";"+items.get(codigo).getNombre()+";"+items.get(codigo).getUnidad()+";"+items.get(codigo).getValor()+";"+items.get(codigo).getCantidad());
     	}
     	
 //    	ArrayList<Double> subTotals = new ArrayList<Double>();
