@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -96,23 +97,87 @@ public class ExcelBook {
 	}
 	
 	public String getCellType(int key, int col) {
+//		this.actualSheet.getCellFormulaValue(key, col)
 		return this.actualSheet.getCellValue(key, col);
+//		return this.actualSheet.getCellValue(key, col);
 	}
 	
 	public Double getCellnumeric(int key, int col) {
 		return this.actualSheet.getCellNumericValue(key, col);
 	}
 	
-	public ArrayList<String> extractItems(){
+	public Map<String, APU> extractItems(){
+		Map<String, APU> map=new HashMap<>();
+		
 		ArrayList<String> items = new ArrayList<String>();
 		for (int i = 0; i < this.actualSheet.getDataMap().size(); i++) {
 			for (int j = 0; j < this.actualSheet.getDataMap().get(i).length; j++) {
 				if(getCellType(i, j).equals("ÍTEM")) {
-					items.add(getCellType(i+1, j));
+					APU apu = new APU();
+					apu.setCodigo(this.actualSheet.getCellValue(i+1, j));
+					apu.setCodigo(apu.getCodigo().replaceAll("\\.", "-"));
+					apu.setNombre(this.actualSheet.getCellValue(i+1, j+2));
+					apu.setNombre(apu.getNombre().replaceAll(";", ":"));
+					apu.setUnidad(this.actualSheet.getCellValue(i+1, 'T'-'A'));
+					apu.setValor(getCostoDirecto(i));
+					apu.setValor(apu.getValor().replaceAll("\\.", ","));
+					
+					
+					map.put(apu.getCodigo(), apu);
 				}
 			}
 		}
-		return items;
+		return map;
+	}
+	
+	public String getCostoDirecto(int i) {
+		for (int ii = i; ii < this.actualSheet.getDataMap().size(); ii++) {
+			for (int jj = 0; jj < this.actualSheet.getDataMap().get(ii).length; jj++) {
+				if(getCellType(ii, jj).equals("TOTAL COSTO DIRECTO")) {
+					return this.actualSheet.getCellValue(ii, 'T'-'A');
+					
+//					for (int k = j+1; k < this.actualSheet.getDataMap().get(i).length; k++) {
+//						if (getCellType(i, k)!="" && this.actualSheet.getCellNumericValue(i, k)!=0) {
+//							apu.setValor(this.actualSheet.getCellNumericValue(i, k));
+//						}
+//					}
+				}
+			}
+		}
+		return null;
+		
+	}
+	
+	
+	public ArrayList<String> extractNamesItems(){
+		ArrayList<String> itemsNames = new ArrayList<String>();
+		for (int i = 0; i < this.actualSheet.getDataMap().size(); i++) {
+			for (int j = 0; j < this.actualSheet.getDataMap().get(i).length; j++) {
+//				System.out.print(getCellType(i,j)+" - ");
+				if(getCellType(i, j).equals("ÍTEM")) {
+//					System.out.println("*********  "+getCellType(i+1,j+1));
+					itemsNames.add(this.actualSheet.getCellFormulaValueString(i+1, j+2));
+				}
+			}
+//			System.out.println();
+		}
+		return itemsNames;
+	}
+	
+	public ArrayList<String> extractItemsTotalCosts(){
+		ArrayList<String> itemsTotalCosts = new ArrayList<String>();
+		for (int i = 0; i < this.actualSheet.getDataMap().size(); i++) {
+			for (int j = 0; j < this.actualSheet.getDataMap().get(i).length; j++) {
+				if(getCellType(i, j).equals("TOTAL COSTO DIRECTO")) {
+					for (int k = j+1; k < this.actualSheet.getDataMap().get(i).length; k++) {
+						if (getCellType(i, k)!="" && this.actualSheet.getCellNumericValue(i, k)!=0) {
+							itemsTotalCosts.add(this.actualSheet.getCellValue(i, k));
+						}
+					}
+				}
+			}
+		}
+		return itemsTotalCosts;
 	}
 	
 	public Vector<String> extractTypesMaterials(){
@@ -157,7 +222,7 @@ public class ExcelBook {
 
 
 
-	private class ExcelSheet {
+	public class ExcelSheet {
 		
 		private Map<Integer, Object[]> dataMap; 
 		private XSSFSheet sheet;
@@ -166,7 +231,7 @@ public class ExcelBook {
 			dataMap = new TreeMap<Integer, Object[]>();
 		}	
 
-		private void setSheet(XSSFSheet sheet) {
+		public void setSheet(XSSFSheet sheet) {
 			this.sheet = sheet;
 		}
 		
@@ -191,7 +256,21 @@ public class ExcelBook {
 		private String getCellFormulaValue(int key, int col){
 			Object[] arregloObjetos = dataMap.get(key);
 			XSSFCell cell= (XSSFCell) arregloObjetos[col];
+			switch (cell.getCachedFormulaResultType()) {
+			case Cell.CELL_TYPE_NUMERIC:
+				return String.valueOf(cell.getNumericCellValue());
+			case Cell.CELL_TYPE_STRING:
+				return String.valueOf(cell.getRichStringCellValue());
+			default:
+				break;
+			}
 			return cell.getCellFormula();
+		}
+		
+		private String getCellFormulaValueString(int key, int col){
+			Object[] arregloObjetos = dataMap.get(key);
+			XSSFCell cell= (XSSFCell) arregloObjetos[col];
+			return cell.getStringCellValue();
 		}
 		
 		public Map<Integer, Object[]> getDataMap() {

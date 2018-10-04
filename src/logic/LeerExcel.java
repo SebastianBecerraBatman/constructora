@@ -1,6 +1,10 @@
 package logic;
 
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Vector;
+
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import entities.TypeElement;
 
@@ -10,22 +14,36 @@ import entities.TypeElement;
  */
 public class LeerExcel {
 
-    public static void main(String args[]) {
-       
-    	ExcelBook libro = new ExcelBook();
+	public static void main(String[] args) {
+		ExcelBook libro = new ExcelBook();
     	
-    	libro.readExcelFile("E:\\seta_projects\\testExcel\\", "PRESUPUESTO Y APU-ELECTRICOS-VR2.xlsx");
-    	libro.readSheet("APU");
+    	//libro.readExcelFile("E:\\seta_projects\\testExcel\\", "PRESUPUESTO Y APU-ELECTRICOS-VR2.xlsx");
+		libro.readExcelFile("C://Users/LENOVO PC/Documents/", "RCI MEM Y APU (Autoguardado).xlsx");
+    	int num = libro.getWorkbook().getNumberOfSheets();
+    	for (int i = 0; i < num; i++) {
+    		XSSFSheet hoja = libro.getWorkbook().getSheetAt(i);
+//    		System.out.println(hoja.getSheetName());
+    		if(hoja.getSheetName().contains("APU")) {
+    		leerLibro(libro, hoja.getSheetName());	
+    		}
+		}    
+	}
+	
+    public static void leerLibro(ExcelBook libro, String hoja) {
+       
+    		
 //    	int colum = -1;
 //    	double acum = 0;
 //    	double acumTotal = 0;
 //    	boolean isSubtotal = false;
-    	
+    	libro.readSheet(hoja);
     	
     	Vector<TypeElement> typeElements = libro.createTypesMaterials();
-    	for (int i = 0; i < typeElements.size(); i++) {
-			System.out.println(typeElements.get(i).getName());
-		}
+    	Map<String, APU> items = libro.extractItems();
+    	ArrayList<String> totalCosts = libro.extractItemsTotalCosts();
+    	for(String codigo:items.keySet()) {
+    		System.out.println(codigo+";"+items.get(codigo).getNombre()+";"+items.get(codigo).getUnidad()+";"+items.get(codigo).getValor());
+    	}
     	
 //    	ArrayList<Double> subTotals = new ArrayList<Double>();
     	
