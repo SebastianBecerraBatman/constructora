@@ -118,6 +118,10 @@ public class ExcelBook {
 		return this.actualSheet.getCellNumericValue(key, col);
 	}
 	
+	public String getItem() {
+		return this.actualSheet.getCellValue(11,0);
+	}
+	
 	public Map<String, APU> extractItems(String hoja){
 		Map<String, APU> map=new HashMap<>();
 		for (int i = 0; i < this.actualSheet.getDataMap().size(); i++) {
@@ -125,10 +129,9 @@ public class ExcelBook {
 				if(getCellType(i, j).equals("MEMORIA DE CANTIDADES")) {
 					APU apu = new APU();
 					if(!hoja.contains("PRESUPUESTO")) {
-						System.out.println(hoja+" -----  "+this.actualSheet.getCellValue(12,0));
-						apu.setCodigo(this.actualSheet.getCellValue(12,0)+"-0");
+						apu.setCodigo(this.actualSheet.getCellValue(11,0));
 						try {
-							apu.setCantidad(this.actualSheet.getCellNumericValue(47, 38));							
+							apu.setCantidad(this.actualSheet.getCellNumericValue(49, 42));							
 						} catch (Exception e) {
 							// TODO: handle exception
 						}
@@ -150,7 +153,7 @@ public class ExcelBook {
 					APU apu = new APU();
 					if(hoja.contains("APU")) {
 						apu.setCodigo(this.actualSheet.getCellValue(i+1, j));
-						apu.setCodigo(apu.getCodigo().replaceAll("\\.", "-"));
+						apu.setCodigo(apu.getCodigo().replaceAll("\\.0", ""));
 						apu.setNombre(this.actualSheet.getCellValue(i+1, j+2));
 						apu.setNombre(apu.getNombre().replaceAll(";", ":"));
 						apu.setUnidad(this.actualSheet.getCellValue(i+1, 'T'-'A'));
@@ -181,44 +184,6 @@ public class ExcelBook {
 		return 0.0;
 	}
 	
-//	public Map<String, APU> extractItems(String hoja, XSSFSheet sheet){
-//		Map<String, APU> map=new HashMap<>();
-//		
-//		ArrayList<String> items = new ArrayList<String>();
-//		for (int i = 0; i < this.actualSheet.getDataMap().size(); i++) {
-//			for (int j = 0; j < this.actualSheet.getDataMap().get(i).length; j++) {
-//				if(getCellType(i, j).equals("ÍTEM")) {
-//					APU apu = new APU();
-//					if(hoja.contains("APU")) {
-//						apu.setCodigo(this.actualSheet.getCellValue(i+1, j));
-//						apu.setCodigo(apu.getCodigo().replaceAll("\\.", "-"));
-//						apu.setNombre(this.actualSheet.getCellValue(i+1, j+2));
-//						apu.setNombre(apu.getNombre().replaceAll(";", ":"));
-//						apu.setUnidad(this.actualSheet.getCellValue(i+1, 'T'-'A'));
-//						apu.setValor(getCostoDirecto(i));
-//						apu.setValor(apu.getValor().replaceAll("\\.", ","));
-////						this.extractCantidad(sheet.getWorkbook().getSheet(apu.getCodigo().replaceAll("-0", "")));
-////						System.out.println(apu.getCodigo());
-//						map.put(apu.getCodigo(), apu);
-//					}
-//				}
-//			}
-//		}
-//		return map;
-//	}
-	
-//	public Double extractCantidad(XSSFSheet sheet) {
-//		ExcelSheet excelSheet = new ExcelSheet();
-//		excelSheet.setSheet(workbook.getSheet(sheet.getSheetName()));
-//		excelSheet.readSheet(sheet.getSheetName());
-//		for (int i = 0; i < excelSheet.getDataMap().size(); i++) {
-//			System.out.println("hace algo *********************************");
-//			for (int j = 0; j < excelSheet.getDataMap().get(i).length; j++) {
-//				System.out.println(sheet.getSheetName()+" -------- "+ excelSheet.getCellStringValue(0, 0));
-//			}
-//		}
-//		return 0.0;
-//	}
 
 	public String getCostoDirecto(int i) {
 		for (int ii = i; ii < this.actualSheet.getDataMap().size(); ii++) {
